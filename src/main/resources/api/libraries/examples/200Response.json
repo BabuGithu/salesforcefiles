@@ -1,0 +1,10 @@
+[
+  {
+    "tenantID":"101",
+    "username": "babu",
+    "accountnumer": "10001",
+    "branch": "MG Road",
+    "IFSCCode": "SBI00005",
+    "balance": "10000" 
+  }
+]

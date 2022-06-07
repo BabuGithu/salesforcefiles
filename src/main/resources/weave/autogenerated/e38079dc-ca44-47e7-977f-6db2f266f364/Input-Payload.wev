@@ -1,0 +1,8 @@
+%dw 2.0
+
+type auto_e38079dc_ca44_47e7_977f_6db2f266f364_Input_Payload = {
+  tenantID: String, 
+  username?: String, 
+  _?: Any
+}
+
