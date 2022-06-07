@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="f266e2bf-373b-447f-90be-7b576586e657" >
+		<salesforce:basic-connection username="${salesforce.username}" password="${secure::salesforce.password}" securityToken="${secure::salesforce.token}"/>
+	</salesforce:sfdc-config>
+	<sub-flow name="bankingservicesSub_Flow" doc:id="e38079dc-ca44-47e7-977f-6db2f266f364" >
+		<ee:transform doc:name="Transform Message" doc:id="4fd21b4a-88d4-44ba-8ca2-66789fdd3696" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<choice doc:name="Choice" doc:id="efee233d-a33f-4036-aaf1-6a13274b03de" >
+			<when expression='#[payload.tenantID == "101"]'>
+				<logger level="INFO" doc:name="Logger" doc:id="39d4e034-8739-48e3-bbfb-699fb59c4b84" message="ICICI"/>
+				<salesforce:query doc:name="Query" doc:id="bc9d0af4-4f52-4bc2-87ae-c734a0f7ce4a" config-ref="Salesforce_Config">
+					<salesforce:salesforce-query><![CDATA[select Id, tenantID__c, accountnumer__c, balance__c, branch__c, IFSCCode__c, Name, userName__c  from ICICI__c]]></salesforce:salesforce-query>
+				</salesforce:query>
+				<ee:transform doc:name="Transform Message" doc:id="6e59acf8-e1ad-4688-9679-7a68a59bbe3b" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			
+</when>
+			<when expression='#[payload.tenantID == "102"]'>
+				<logger level="INFO" doc:name="Logger" doc:id="997957da-d333-4b02-9013-28042506b430" message="ICICI"/>
+				<salesforce:query doc:name="Query" doc:id="bfa7ce95-a58b-44c3-ba03-54b48c5d56b9" config-ref="Salesforce_Config">
+					<salesforce:salesforce-query ><![CDATA[select Id, tenantID__c, accountnumer__c, balance__c, branch__c, IFSCCode__c, Name, userName__c  from SBI__c]]></salesforce:salesforce-query>
+				</salesforce:query>
+				<ee:transform doc:name="Transform Message" doc:id="33eb07a2-31ff-42ca-a6ef-5e909e61cdf0" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			
+</when>
+			<when expression='#[payload.tenantID == "103"]'>
+				<logger level="INFO" doc:name="Logger" doc:id="d6ee8b21-f2f5-46e5-bc00-d5467af082bc" message="ICICI"/>
+				<salesforce:query doc:name="Query" doc:id="5a86df78-df8f-4e24-a5af-22a84e08910c" config-ref="Salesforce_Config">
+					<salesforce:salesforce-query ><![CDATA[select Id, tenantID__c, accountnumer__c, balance__c, branch__c, IFSCCode__c, Name, userName__c  from BAJAJ__c]]></salesforce:salesforce-query>
+				</salesforce:query>
+				<ee:transform doc:name="Transform Message" doc:id="4b9ed263-18d0-45c5-bae5-c73c640b4b84" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			
+</when>
+			<otherwise >
+				<ee:transform doc:name="Transform Message" doc:id="09512b46-43f8-45f1-8b80-f20bc572bbfb" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+"Invalid Input, Please enter either 101/102/103"]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+	</sub-flow>
+</mule>
